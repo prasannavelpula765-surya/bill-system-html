@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Bill Slip</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="bill-container">
+        <h2>Bill Slip</h2>
+        <!-- This creates a clean, uniform dashed line that spans the whole width -->
+<div style="border-top: 2px dashed #333; margin: 15px 0; width: 100%;"></div><!-- This creates a clean, uniform dashed line that spans the whole width -->
+<div style="border-top: 2px dashed #333; margin: 15px 0; width: 100%;"></div><!-- This creates a clean, uniform dashed line that spans the whole width -->
+<div style="border-top: 2px dashed #333; margin: 15px 0; width: 100%;"></div>
+
+        
+        <!-- ================= DATE, TIME, AND DAY DISPLAY ================= -->
+        <p id="dateTime" style="font-weight: 500; font-size: 15px; color: #444; margin-bottom: 15px;"></p>
+
+        <!-- This creates a clean, uniform dashed line that spans the whole width -->
+<div style="border-top: 2px dashed #333; margin: 15px 0; width: 100%;"></div>
+        
+        <table border="1" width="100%" style="margin-top:10px; border-collapse:collapse;">
+            <thead>
+                <tr>
+                    <th>S.No</th>
+                    <th>Item</th>
+                    <th>Price (₹)</th>
+                    <th>Quantity</th>
+                    <th>Subtotal (₹)</th>
+                </tr>
+            </thead>
+            <tbody id="itemsList"></tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="4" style="text-align:right; font-weight:bold;">Grand Total</td>
+                    <td id="grandTotal" style="font-weight:bold;"></td>
+                </tr>
+            </tfoot>
+        </table>
+        
+        <!-- Hotel Details Section -->
+        <div style="margin-top: 30px; text-align: center; font-size: 14px; line-height: 1.6;">
+            <div style="border-top: 2px dashed #333; margin-bottom: 15px; width: 100%;"></div>
+            <p style="margin: 0; font-size: 18px; font-weight: bold; color: #222;">🏨 SR Homes Foods!</p>
+            <p style="margin: 3px 0; font-weight: 500;">📞 Mobile Number: +91-8106413016</p>
+            <p style="margin: 3px 0;">📍 Address: SR Homes Foods,Plvd Road, Anantapur 515631</p>
+            <p style="margin: 10px 0 0 0; font-style: italic; color: #666; font-size: 13px;">Thank you for Visting with us! Visit Again & Again.</p>
+            <div style="border-top: 2px dashed #333; margin-top: 15px; width: 100%;"></div>
+        </div>
+
+        <br>
+        <!-- Buttons hide automatically on print sheets -->
+        <button onclick="window.print()">Print / Save as PDF</button>
+        <button id="quitBtn" style="background: #dc3545; margin-top: 10px;">Quit & Clear Bill</button>
+        <button onclick="window.location.href='index.html'" style="background: #007bff; margin-top: 10px;">Go Back (Keep Items)</button>
+    </div>
+
+    <script>
+        // Read the items saved by index.html from browser memory[cite: 4]
+        const cart = JSON.parse(localStorage.getItem("cart")) || [];
+        
+        // 🛠️ CONFIGURATION FOR DATE, TIME & DAY DISPLAY
+        const timeOptions = { 
+            weekday: 'long',  // Adds Day (e.g. Saturday)
+            year: 'numeric',  // Adds Year
+            month: 'long',    // Adds Month Name (e.g. July)
+            day: 'numeric',   // Adds Date Number
+            hour: '2-digit',  // Adds Hour
+            minute: '2-digit',// Adds Minutes
+            second: '2-digit' // Adds Seconds
+        };
+        
+        // Output formatting: "Saturday, July 11, 2026 at 11:55:19 AM"
+        document.getElementById("dateTime").innerText = "Date & Time: " + new Date().toLocaleString(undefined, timeOptions);
+
+        let itemsHtml = "";
+        let total = 0;
+        let serial = 1;
+
+        if (cart.length === 0) {
+            itemsHtml = "<tr><td colspan='5' style='text-align:center;'>No items in the cart yet!</td></tr>";
+        } else {
+            cart.forEach(item => {
+                const subtotal = item.price * item.quantity;
+                itemsHtml += `<tr>
+                    <td>${serial}</td>
+                    <td>${item.item}</td>
+                    <td>₹${item.price.toFixed(2)}</td>
+                    <td>${item.quantity}</td>
+                    <td>₹${subtotal.toFixed(2)}</td>
+                </tr>`;
+                total += subtotal;
+                serial++;
+            });
+        }
+
+        document.getElementById("itemsList").innerHTML = itemsHtml;
+        document.getElementById("grandTotal").innerText = "₹" + total.toFixed(2);
+
+        // Handles clearing the items and redirecting back home[cite: 1]
+        document.getElementById("quitBtn").addEventListener("click", function() {
+            localStorage.removeItem("cart"); // Completely deletes the saved bill data[cite: 1]
+            alert("Cart and Bill cleared successfully!");
+            window.location.href = "index.html"; // Returns you to the main screen[cite: 1]
+        });
+    </script>
+</body>
+</html>

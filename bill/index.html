@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Food Cart Application</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h2>Food Cart Application</h2>
+    <form id="cartForm">
+        <label>Item:</label>
+        <input type="text" name="item" required>
+
+        <label>Price:</label>
+        <input type="number" name="price" step="0.01" required>
+
+        <label>Quantity:</label>
+        <input type="number" name="quantity" required>
+
+        <button type="submit">Add Item</button>
+        <button type="button" id="billBtn">Generate Bill</button>
+        <button type="button" id="quitBtn">Clear</button>
+    </form>
+
+    <script>
+        // Start with empty array or grab whatever is already in localStorage
+        let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+        // 1. Handle adding items to the cart
+        document.getElementById("cartForm").addEventListener("submit", function(e) {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            const item = formData.get("item");
+            const price = parseFloat(formData.get("price"));
+            const quantity = parseInt(formData.get("quantity"));
+
+            cart.push({ item, price, quantity });
+            localStorage.setItem("cart", JSON.stringify(cart)); // Save it to the browser memory
+            alert("Item added successfully!");
+            e.target.reset(); // Clear the form inputs for the next item
+        });
+
+        // 2. THIS OPENS THE BILL PAGE - Double-check that this name matches your second file exactly!
+        document.getElementById("billBtn").addEventListener("click", function() {
+            window.location.href = "biilsisply.html"; 
+        });
+
+        // 3. Handle clearing the cart
+        document.getElementById("quitBtn").addEventListener("click", function() {
+            cart = [];
+            localStorage.removeItem("cart"); 
+            alert("Cart cleared!");
+        });
+    </script>
+</body>
+</html>
+
